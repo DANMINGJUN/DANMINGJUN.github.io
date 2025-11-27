@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>想你 - 温馨提示 (趣味增强版)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #f5f5f5;
+            height: 100vh;
+            width: 100vw;
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,221,225,0.3) 0%, rgba(204,235,255,0.3) 90%);
+        }
+
+        /* 模拟窗口的样式 - 增强版 */
+        .warm-tip-window {
+            position: absolute;
+            width: 250px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            z-index: 1000;
+            user-select: none;
+            cursor: move; /* 拖拽光标 */
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px); /* 背景模糊 */
+            padding: 0 15px;
+            text-align: center;
+        }
+
+        /* 渐变边框 */
+        .warm-tip-window::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, var(--border-color1), var(--border-color2));
+            z-index: -1;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 鼠标悬停效果增强 */
+        .warm-tip-window:hover {
+            transform: scale(1.1) rotate(1deg);
+            z-index: 1001;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        .warm-tip-window:hover::before {
+            opacity: 1;
+        }
+
+        /* 双击放大效果 */
+        .warm-tip-window.active {
+            width: 320px;
+            height: 80px;
+            font-size: 20px;
+            transform: scale(1.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 2000;
+        }
+
+        /* 粒子效果容器 */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* 新增动画效果 */
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            70% { transform: scale(1.1) rotate(5deg); opacity: 0.9; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+            50% { box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+            100% { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        }
+
+        /* 文字渐变 */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(45deg, #333, #666);
+        }
+
+        /* 底部计数提示 */
+        .counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 3000;
+            backdrop-filter: blur(3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="counter">当前温馨提示：<span id="tipCount">0</span> 个</div>
+
+    <script>
+        const tips = [
+            '多喝水哦', '保持微笑呀', '每天都要元气满满',
+            '记得吃水果', '保持好心情', '好好爱自己', '我想你了',
+            '梦想成真', '期待下一次见面', '金榜题名',
+            '顺顺利利', '早点休息', '愿所有烦恼都消失',
+            '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服',
+            '你超棒的！', '加油呀～', '一切都会好起来',
+            '享受当下', '平安喜乐', '万事胜意', '被世界温柔以待'
+        ];
+
+        // 增强版颜色库（更柔和美观）
+        const bgColors = [
+            'rgba(255, 221, 225, 0.85)', 'rgba(191, 239, 255, 0.85)', 'rgba(204, 255, 204, 0.85)',
+            'rgba(230, 230, 255, 0.85)', 'rgba(255, 255, 204, 0.85)', 'rgba(255, 218, 225, 0.85)',
+            'rgba(255, 230, 204, 0.85)', 'rgba(221, 255, 255, 0.85)', 'rgba(240, 230, 255, 0.85)',
+            'rgba(255, 240, 245, 0.85)', 'rgba(240, 255, 240, 0.85)', 'rgba(255, 250, 240, 0.85)',
+            'rgba(225, 242, 255, 0.85)', 'rgba(255, 236, 210, 0.85)', 'rgba(237, 246, 255, 0.85)'
+        ];
+
+        // 边框渐变颜色对
+        const borderColorPairs = [
+            ['#ff9aa2', '#ffb7b2'], ['#8ec5fc', '#e0c3fc'], ['#a8edea', '#fed6e3'],
+            ['#ffd1ff', '#fa8bff'], ['#f9f586', '#f8d886'], ['#caffbf', '#9bf6ff'],
+            ['#ffadad', '#ffd6a5'], ['#fdffb6', '#caffc7'], ['#9bf6ff', '#bdb2ff']
+        ];
+
+        // 粒子颜色库
+        const particleColors = [
+            'rgba(255, 154, 162, 0.7)', 'rgba(142, 197, 252, 0.7)', 'rgba(168, 237, 234, 0.7)',
+            'rgba(255, 209, 255, 0.7)', 'rgba(249, 245, 134, 0.7)', 'rgba(202, 255, 191, 0.7)'
+        ];
+
+        let tipCount = 0;
+        const tipCountElement = document.getElementById('tipCount');
+
+        // 显示温馨提示窗口
+        function showWarmTip() {
+            const tipWindow = document.createElement('div');
+            tipWindow.className = 'warm-tip-window text-gradient';
+
+            // 随机选择内容、背景色、边框色
+            const text = tips[Math.floor(Math.random() * tips.length)];
+            const bgColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+            const [borderColor1, borderColor2] = borderColorPairs[Math.floor(Math.random() * borderColorPairs.length)];
+
+            tipWindow.innerText = text;
+            tipWindow.style.backgroundColor = bgColor;
+            tipWindow.style.setProperty('--border-color1', borderColor1);
+            tipWindow.style.setProperty('--border-color2', borderColor2);
+
+            // 随机位置（优化：避免太靠近边缘）
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const winWidth = 250;
+            const winHeight = 60;
+
+            // 边缘留20px间距
+            const x = 20 + Math.random() * (screenWidth - winWidth - 40);
+            const y = 20 + Math.random() * (screenHeight - winHeight - 40);
+
+            tipWindow.style.left = x + 'px';
+            tipWindow.style.top = y + 'px';
+
+            // 随机添加浮动动画
+            if (Math.random() > 0.3) {
+                tipWindow.style.animation = 'float 5s ease-in-out infinite';
+            } else {
+                tipWindow.style.animation = 'pulse 3s ease-in-out infinite';
+            }
+
+            // 拖拽功能
+            makeDraggable(tipWindow);
+
+            // 点击关闭 + 粒子效果
+            tipWindow.onclick = function(e) {
+                e.stopPropagation(); // 阻止冒泡
+                createParticles(e.clientX, e.clientY); // 创建粒子效果
+                this.style.opacity = "0";
+                this.style.transform = "scale(0.8)";
+                setTimeout(() => {
+                    if (this.parentNode) {
+                        this.parentNode.removeChild(this);
+                        tipCount--;
+                        updateTipCount();
+                    }
+                }, 300);
+            };
+
+            // 双击放大/还原
+            tipWindow.ondblclick = function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+                if (this.classList.contains('active')) {
+                    this.style.animation = 'none'; // 取消浮动动画
+                } else {
+                    // 恢复随机动画
+                    if (Math.random() > 0.3) {
+                        this.style.animation = 'float 5s ease-in-out infinite';
+                    } else {
+                        this.style.animation = 'pulse 3s ease-in-out infinite';
+                    }
+                }
+            };
+
+            // 自动躲避窗口重叠（简单版）
+            avoidOverlap(tipWindow);
+
+            document.body.appendChild(tipWindow);
+            tipCount++;
+            updateTipCount();
+        }
+
+        // 拖拽功能实现
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+            element.onmousedown = dragStart;
+
+            function dragStart(e) {
+                e.preventDefault();
+                // 获取鼠标初始位置
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                // 提升层级
+                element.style.zIndex = 2000;
+
+                // 绑定鼠标移动和松开事件
+                document.onmousemove = dragMove;
+                document.onmouseup = dragEnd;
+            }
+
+            function dragMove(e) {
+                e.preventDefault();
+                // 计算移动距离
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+
+                // 更新元素位置，限制在窗口内
+                const newLeft = element.offsetLeft - pos1;
+                const newTop = element.offsetTop - pos2;
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const winWidth = element.offsetWidth;
+                const winHeight = element.offsetHeight;
+
+                // 边界检测
+                if (newLeft >= 0 && newLeft <= screenWidth - winWidth) {
+                    element.style.left = newLeft + "px";
+                }
+                if (newTop >= 0 && newTop <= screenHeight - winHeight) {
+                    element.style.top = newTop + "px";
+                }
+            }
+
+            function dragEnd() {
+                // 恢复层级
+                element.style.zIndex = 1000;
+                // 解绑事件
+                document.onmousemove = null;
+                document.onmouseup = null;
+            }
+        }
+
+        // 简单的窗口重叠避免
+        function avoidOverlap(newWindow) {
+            const allWindows = document.querySelectorAll('.warm-tip-window');
+            if (allWindows.length <= 1) return;
+
+            const newRect = newWindow.getBoundingClientRect();
+            let overlap = false;
+
+            // 检查与其他窗口的重叠
+            allWindows.forEach(window => {
+                if (window === newWindow) return;
+                const rect = window.getBoundingClientRect();
+                if (
+                    newRect.left < rect.right &&
+                    newRect.right > rect.left &&
+                    newRect.top < rect.bottom &&
+                    newRect.bottom > rect.top
+                ) {
+                    overlap = true;
+                }
+            });
+
+            // 如果重叠，重新调整位置
+            if (overlap) {
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const winWidth = newWindow.offsetWidth;
+                const winHeight = newWindow.offsetHeight;
+
+                const newLeft = 20 + Math.random() * (screenWidth - winWidth - 40);
+                const newTop = 20 + Math.random() * (screenHeight - winHeight - 40);
+
+                newWindow.style.left = newLeft + 'px';
+                newWindow.style.top = newTop + 'px';
+            }
+        }
+
+        // 创建粒子效果
+        function createParticles(x, y) {
+            const particleCount = 15; // 粒子数量
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // 随机粒子大小、颜色、位置
+                const size = 3 + Math.random() * 8;
+                const color = particleColors[Math.floor(Math.random() * particleColors.length)];
+                const angle = Math.random() * Math.PI * 2; // 随机角度
+                const speed = 2 + Math.random() * 5; // 随机速度
+                const distance = 5 + Math.random() * 20; // 随机距离
+
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.backgroundColor = color;
+                particle.style.left = x - size/2 + 'px';
+                particle.style.top = y - size/2 + 'px';
+
+                // 粒子动画
+                let startTime = Date.now();
+                const duration = 800 + Math.random() * 500; // 动画时长
+
+                function updateParticle() {
+                    const elapsed = Date.now() - startTime;
+                    if (elapsed > duration) {
+                        particle.remove();
+                        return;
+                    }
+
+                    // 计算粒子位置
+                    const progress = elapsed / duration;
+                    const currentDistance = distance * progress;
+                    const newX = x - size/2 + Math.cos(angle) * currentDistance;
+                    const newY = y - size/2 + Math.sin(angle) * currentDistance;
+
+                    particle.style.left = newX + 'px';
+                    particle.style.top = newY + 'px';
+                    particle.style.opacity = 1 - progress; // 逐渐透明
+
+                    requestAnimationFrame(updateParticle);
+                }
+
+                document.body.appendChild(particle);
+                requestAnimationFrame(updateParticle);
+            }
+        }
+
+        // 更新计数显示
+        function updateTipCount() {
+            tipCountElement.innerText = tipCount;
+        }
+
+        // 点击空白处添加新窗口
+        document.body.onclick = function(e) {
+            if (e.target === document.body) {
+                showWarmTip();
+            }
+        };
+
+        // 启动逻辑：创建30个窗口（减少数量避免过于拥挤）
+        const totalWindows = 30;
+        const intervalDelay = 150; // 0.15秒间隔
+
+        for (let i = 0; i < totalWindows; i++) {
+            setTimeout(() => {
+                showWarmTip();
+            }, i * intervalDelay);
+        }
+
+        // 窗口大小改变时重新调整位置
+        window.onresize = function() {
+            const allWindows = document.querySelectorAll('.warm-tip-window');
+            allWindows.forEach(window => {
+                const rect = window.getBoundingClientRect();
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const winWidth = window.offsetWidth;
+                const winHeight = window.offsetHeight;
+
+                // 确保窗口在可视区域内
+                let newLeft = rect.left;
+                let newTop = rect.top;
+
+                if (newLeft < 0) newLeft = 20;
+                if (newLeft > screenWidth - winWidth) newLeft = screenWidth - winWidth - 20;
+                if (newTop < 0) newTop = 20;
+                if (newTop > screenHeight - winHeight) newTop = screenHeight - winHeight - 20;
+
+                window.style.left = newLeft + 'px';
+                window.style.top = newTop + 'px';
+            });
+        };
+    </script>
+</body>
+</html>
