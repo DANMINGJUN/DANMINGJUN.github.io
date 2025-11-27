@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./index.css">
+    <script src="./jQuery.js"></script>
+</head>
+
+<body>
+    <div class="a">
+        <div class="a1">
+            <div class="a1-1">
+                <div style="background-color: darkolivegreen;" id="a1-1"></div>
+                <div style="background-color: darkblue;margin-left: 30px;" id="a1-2"></div>
+                <div style="background-color: crimson;margin-left: 30px;" id="a1-3"></div>
+                <div style="background-color: gold;margin-left: 30px;" id="a1-4"></div>
+            </div>
+            <script>
+                window.onload = function () {
+                    var div0 = document.getElementById("a1-1");
+                    var div1 = document.getElementById("a1-2");
+                    var div2 = document.getElementById("a1-3");
+                    var div3 = document.getElementById("a1-4");
+                    div0.onmouseover = function () {
+                        div0.style.marginTop = "30px";
+                    }
+                    div0.onmouseout = function () {
+                        div0.style.marginTop = "0px";
+                    }
+                    div1.onmouseover = function () {
+                        div1.style.marginTop = "30px";
+                    }
+                    div1.onmouseout = function () {
+                        div1.style.marginTop = "0px";
+                    }
+                    div2.onmouseover = function () {
+                        div2.style.marginTop = "30px";
+                    }
+                    div2.onmouseout = function () {
+                        div2.style.marginTop = "0px";
+                    }
+                    div3.onmouseover = function () {
+                        div3.style.marginTop = "30px";
+                    }
+                    div3.onmouseout = function () {
+                        div3.style.marginTop = "0px";
+                    }
+                }
+            </script>
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <p class="ex1" style="font-size: 70px;text-align: center;margin-top: 100px;">すごいですね</p>
+            <p style="text-align: center;margin-top: 80px;" class="ex2">IoT</p>
+        </div>
+        <script>
+            var windowWidth = window.screen.width;
+            var windowHeight = window.screen.height;
+
+            function createSnow() {
+                var left = 0;
+                var top = 0;
+
+                var left_random = Math.random() * windowWidth;
+                var top_random = Math.random() * windowHeight;
+                var div = document.createElement('div');
+                div.className = 'snow';
+                div.style.transform = 'scale(' + (Math.random()) + ')'
+
+                document.body.appendChild(div);
+
+                setInterval(function () {
+
+                    div.style.left = left_random + left + 'px';
+                    div.style.top = top_random + top + 'px'
+                    left += 0.2;
+                    top += 0.2;
+
+                    if (left_random + left >= windowWidth) {
+                        left_random = Math.random();
+                        left = 0;
+                    }
+
+                    if (top_random + top >= windowHeight) {
+                        top_random = Math.random();
+                        top = 0;
+                    }
+                }, 10)
+
+            }
+            for (var i = 0; i < 200; i++) {
+                createSnow()
+            }
+        </script>
+        <div class="a2">
+            <h1>姓名：<span id="ZB1" style="color: red;">但明峻</span></h1>
+            <h1>专业：<span id="ZB2" style="color: rgb(253, 194, 0);">物联网工程</span></h1>
+            <h1>爱好：<span id="ZB3" style="color: rgb(0, 195, 255);">模型 骑行 发现新事物</span></h1>
+            <h1>为什么选择前端：<span id="ZB4" style="color: rgba(0, 81, 255, 0.616);">刚开始选择前端是在学长课堂，对于一个对成就感很看重的我来说，比起后台的产物还是盛灵活性的网页更加吸引我，每一次作业之后都有一个个作品产生，看着一次比一次好的作业，内心很欣慰。在后来深入的了解后，知道前端的就业方面非常大，我也特别喜欢。</span></h1>
+            <h1>为什么想加入：<span id="ZB5" style="color: rgba(255, 0, 191, 0.637);">早定方向的人往往能比别人更快，在逐步学习过程中，我已经将前端作为以后的就业方向，希望更加深入学习。平台很重要，525工作室有优质的资源和平台，有优秀的指导老师，学姐学长，我渴望和志同道合的人一起完成项目，也想为工作室、学校、乃至社会做出一份贡献，更想为自己的大学时光打下重要的一笔。</span></h1>
+
+        </div>
+        <script>
+            let index1 = 0;
+            let word1 = document.getElementById("ZB1").innerText;
+            function one1() {
+                document.getElementById("ZB1").innerText = word1.substring(0, index1++);
+            }
+            setInterval(one1, 600);
+        </script>
+        <script>
+            let index2 = 0;
+            let word2 = document.getElementById("ZB2").innerText;
+            function one2() {
+                document.getElementById("ZB2").innerText = word2.substring(0, index2++);
+            }
+            setInterval(one2, 400);
+        </script>
+        <script>
+            let index3 = 0;
+            let word3 = document.getElementById("ZB3").innerText;
+            function one3() {
+                document.getElementById("ZB3").innerText = word3.substring(0, index3++);
+            }
+            setInterval(one3, 450);
+        </script>
+        <script>
+            let index4 = 0;
+            let word4 = document.getElementById("ZB4").innerText;
+            function one4() {
+                document.getElementById("ZB4").innerText = word4.substring(0, index4++);
+            }
+            setInterval(one4, 90);
+        </script>
+         <script>
+            let index5 = 0;
+            let word5 = document.getElementById("ZB5").innerText;
+            function one5() {
+                document.getElementById("ZB5").innerText = word5.substring(0, index5++);
+            }
+            setInterval(one5, 100);
+        </script>
+        <script>
+            (function ($) {
+                $.fn.textyleF = function (options) {
+                    var target = this;
+                    var targetTxt = target.contents();
+                    var defaults = {
+                        duration: 1000,
+                        delay: 150,
+                        easing: 'ease',
+                        callback: null
+                    };
+                    var setting = $.extend(defaults, options);
+                    //split txt & wrap txt by span
+                    targetTxt.each(function () {
+                        var texts = $(this);
+                        if (this.nodeType === 3) {
+                            mkspn(texts);
+                        }
+                    });
+                    function mkspn(texts) {
+                        texts.replaceWith(texts.text().replace(/(\S)/g, '<span>$1</span>'));
+                    }
+                    //txt animation
+                    return this.each(function (i) {
+                        var child = target.children('span');
+                        target.css('opacity', 1);
+                        child.each(function (i) {
+                            $(this).delay(setting.delay * i)
+                                .queue(function (next) {
+                                    $(this).css({
+                                        display: 'inline-block',
+                                        transform: 'rotateY(0deg) rotateX(0deg)',
+                                        opacity: 1,
+                                        transitionDuration: setting.duration + 'ms',
+                                        transitionTimingFunction: setting.easing
+                                    })
+                                    next();
+                                });
+                            if (typeof setting.callback === 'function') {
+                                $(this).on('transitionend', function () {
+                                    setting.callback.call(this);
+                                });
+                            } else {
+                                console.error('Textyle.js: `setting.callback` must be a function.');
+                            }
+                        });
+                    });
+                };
+            }(jQuery));
+            //////plugin code to here//////
+
+
+            $(window).on('load', function () {
+                //////code to call//////
+                $('.ex1').textyleF();
+                $('.ex2').textyleF({
+                    duration: 2000,
+                    delay: 200,
+                    easing: 'cubic-bezier(0.77, 0, 0.175, 1)',
+                    callback: function () {
+                        $(this).css({
+                            color: '#fff',
+                            transition: '1s',
+                        });
+                        $('.desc').css('opacity', 1);
+                    }
+                });
+            });
+        </script>
+    </div>
+
+</body>
+
+</html>
