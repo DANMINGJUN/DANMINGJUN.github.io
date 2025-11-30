@@ -40,6 +40,16 @@
             word-break: break-all;
         }
 
+        /* 固定气泡样式（不允许拖拽和自动移动） */
+        .fixed-tip-window {
+            position: fixed; /* 固定定位 */
+            cursor: default; /* 普通光标 */
+            z-index: 2500; /* 高于普通气泡 */
+            animation: float 8s ease-in-out infinite; /* 保持漂浮动画 */
+            width: 280px; /* 稍微宽一点 */
+            height: 70px;
+        }
+
         /* 渐变边框 */
         .warm-tip-window::before {
             content: '';
@@ -63,6 +73,11 @@
             border-color: rgba(255,255,255,0.8);
         }
 
+        .fixed-tip-window:hover {
+            transform: scale(1.15) rotate(1deg); /* 悬停效果更强 */
+            z-index: 3000;
+        }
+
         .warm-tip-window:hover::before {
             opacity: 1;
         }
@@ -76,6 +91,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 2000;
             animation: bounce 0.5s ease;
+        }
+
+        .fixed-tip-window.active {
+            width: 350px;
+            height: 90px;
+            font-size: 22px;
         }
 
         /* 文字闪烁动画 */
@@ -289,6 +310,7 @@
         const tipCountElement = document.getElementById('tipCount');
         const contextMenu = document.getElementById('contextMenu');
         let currentWindow = null;
+        let fixedTipWindow = null; // 存储固定气泡实例
 
         // 生成随机文字
         function generateRandomText() {
@@ -410,8 +432,89 @@
             startAutoMove(tipWindow);
         }
 
+        // 创建固定在右下角的气泡
+        function createFixedTipWindow() {
+            const tipWindow = document.createElement('div');
+            tipWindow.className = 'warm-tip-window text-gradient fixed-tip-window';
+            
+            // 自定义文字 - 在这里修改你想要的文字
+            const customText = '睡觉要早，记性要好，吃饭要饱，心情要妙～';
+            
+            // 选择一个醒目的颜色组合（可以自己调整）
+            const colorPair = borderColorPairs[1]; // 蓝色渐变边框
+            const bgColor = bgColors[3]; // 淡紫色背景
+            
+            tipWindow.innerText = customText;
+            tipWindow.style.backgroundColor = bgColor;
+            tipWindow.style.setProperty('--border-color1', colorPair[0]);
+            tipWindow.style.setProperty('--border-color2', colorPair[1]);
+
+            // 固定在右下角（距离底部和右侧20px）
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const winWidth = 280;
+            const winHeight = 70;
+
+            const x = screenWidth - winWidth - 20;
+            const y = screenHeight - winHeight - 20;
+
+            tipWindow.style.left = x + 'px';
+            tipWindow.style.top = y + 'px';
+
+            // 固定动画：漂浮效果
+            tipWindow.style.animation = 'float 6s ease-in-out infinite';
+
+            // 强制添加文字闪烁效果（可选，不想闪烁可以删除这行）
+            tipWindow.classList.add('text-flicker');
+
+            // 左键点击：变色+粒子效果（保持交互）
+            tipWindow.onclick = function(e) {
+                e.stopPropagation();
+                // 切换颜色
+                const { bgColor: newBg, border1: newBorder1, border2: newBorder2 } = getRandomColorPair();
+                this.style.backgroundColor = newBg;
+                this.style.setProperty('--border-color1', newBorder1);
+                this.style.setProperty('--border-color2', newBorder2);
+                
+                // 粒子效果
+                createParticles(e.clientX, e.clientY);
+            };
+
+            // 双击放大/还原（不改变文字）
+            tipWindow.ondblclick = function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+            };
+
+            // 右键菜单（隐藏随机位置和关闭功能，保留复制和置顶）
+            tipWindow.oncontextmenu = function(e) {
+                e.preventDefault();
+                currentWindow = this;
+                
+                // 显示菜单并隐藏不需要的选项
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = e.clientX + 'px';
+                contextMenu.style.top = e.clientY + 'px';
+                
+                // 隐藏随机位置和关闭选项（固定气泡不允许关闭）
+                contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
+                    if (item.dataset.action === 'random' || item.dataset.action === 'close') {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'block';
+                    }
+                });
+            };
+
+            document.body.appendChild(tipWindow);
+            fixedTipWindow = tipWindow; // 保存实例，用于窗口大小改变时调整位置
+        }
+
         // 拖拽功能
         function makeDraggable(element) {
+            // 固定气泡不允许拖拽，只有普通气泡可以拖拽
+            if (element.classList.contains('fixed-tip-window')) return;
+            
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
             element.onmousedown = dragStart;
@@ -456,8 +559,10 @@
             }
         }
 
-        // 自动移动和碰撞检测
+        // 自动移动和碰撞检测（固定气泡不需要）
         function startAutoMove(element) {
+            if (element.classList.contains('fixed-tip-window')) return;
+            
             function move() {
                 const screenWidth = window.innerWidth;
                 const screenHeight = window.innerHeight;
@@ -495,9 +600,11 @@
             move();
         }
 
-        // 避免重叠
+        // 避免重叠（固定气泡不需要）
         function avoidOverlap(newWindow) {
-            const allWindows = document.querySelectorAll('.warm-tip-window');
+            if (newWindow.classList.contains('fixed-tip-window')) return;
+            
+            const allWindows = document.querySelectorAll('.warm-tip-window:not(.fixed-tip-window)');
             if (allWindows.length <= 1) return;
 
             const newRect = newWindow.getBoundingClientRect();
@@ -587,6 +694,14 @@
             const action = e.target.dataset.action;
             if (!currentWindow) return;
 
+            // 固定气泡不允许随机位置和关闭
+            if (currentWindow.classList.contains('fixed-tip-window') && 
+                (action === 'random' || action === 'close')) {
+                contextMenu.style.display = 'none';
+                currentWindow = null;
+                return;
+            }
+
             switch(action) {
                 case 'copy':
                     // 复制文字
@@ -661,7 +776,7 @@
 
         document.getElementById('clearBtn').addEventListener('click', function(e) {
             e.stopPropagation();
-            const allWindows = document.querySelectorAll('.warm-tip-window');
+            const allWindows = document.querySelectorAll('.warm-tip-window:not(.fixed-tip-window)');
             allWindows.forEach(window => {
                 // 批量粒子效果
                 createParticles(
@@ -680,19 +795,9 @@
             updateTipCount();
         });
 
-        // 初始化：创建30个窗口
-        const totalWindows = 30;
-        const intervalDelay = 150;
-
-        for (let i = 0; i < totalWindows; i++) {
-            setTimeout(() => {
-                showWarmTip();
-            }, i * intervalDelay);
-        }
-
         // 窗口大小改变时调整位置
         window.onresize = function() {
-            const allWindows = document.querySelectorAll('.warm-tip-window');
+            const allWindows = document.querySelectorAll('.warm-tip-window:not(.fixed-tip-window)');
             allWindows.forEach(window => {
                 const rect = window.getBoundingClientRect();
                 const screenWidth = window.innerWidth;
@@ -711,7 +816,33 @@
                 window.style.left = newLeft + 'px';
                 window.style.top = newTop + 'px';
             });
+
+            // 调整固定气泡的位置
+            if (fixedTipWindow) {
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const winWidth = fixedTipWindow.offsetWidth;
+                const winHeight = fixedTipWindow.offsetHeight;
+
+                const x = screenWidth - winWidth - 20;
+                const y = screenHeight - winHeight - 20;
+
+                fixedTipWindow.style.left = x + 'px';
+                fixedTipWindow.style.top = y + 'px';
+            }
         };
+
+        // 初始化：先创建固定气泡，再创建30个普通气泡
+        createFixedTipWindow();
+
+        const totalWindows = 30;
+        const intervalDelay = 150;
+
+        for (let i = 0; i < totalWindows; i++) {
+            setTimeout(() => {
+                showWarmTip();
+            }, i * intervalDelay);
+        }
     </script>
 </body>
 </html>
