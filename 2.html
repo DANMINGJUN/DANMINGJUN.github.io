@@ -3,20 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试2</title>
+    <title>创意文字气泡+多功能增强版</title>
     <style>
+        :root {
+            --bg-primary: #f5f5f5;
+            --bg-gradient: radial-gradient(circle at 10% 20%, rgba(255,221,225,0.3) 0%, rgba(204,235,255,0.3) 90%);
+            --text-color: #333;
+            --control-bg: rgba(255,255,255,0.8);
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+
+        :root.dark-mode {
+            --bg-primary: #1a1a2e;
+            --bg-gradient: radial-gradient(circle at 10% 20%, rgba(60,40,80,0.3) 0%, rgba(30,50,80,0.3) 90%);
+            --text-color: #eee;
+            --control-bg: rgba(30,30,50,0.8);
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #f5f5f5;
+            background-color: var(--bg-primary);
             height: 100vh;
             width: 100vw;
             font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
-            background-image: radial-gradient(circle at 10% 20%, rgba(255,221,225,0.3) 0%, rgba(204,235,255,0.3) 90%);
+            background-image: var(--bg-gradient);
+            transition: all 0.5s ease;
         }
 
-        /* 模拟窗口的样式 - 增强版 */
+        /* 气泡样式 */
         .warm-tip-window {
             position: absolute;
             width: 250px;
@@ -29,18 +47,18 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             font-size: 16px;
             font-weight: bold;
-            color: #333;
+            color: var(--text-color);
             z-index: 1000;
             user-select: none;
-            cursor: move; /* 拖拽光标 */
+            cursor: move;
             animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px); /* 背景模糊 */
+            backdrop-filter: blur(5px);
             padding: 0 15px;
             text-align: center;
+            word-break: break-all;
         }
 
-        /* 渐变边框 */
         .warm-tip-window::before {
             content: '';
             position: absolute;
@@ -55,7 +73,6 @@
             transition: opacity 0.3s ease;
         }
 
-        /* 鼠标悬停效果增强 */
         .warm-tip-window:hover {
             transform: scale(1.1) rotate(1deg);
             z-index: 1001;
@@ -67,25 +84,255 @@
             opacity: 1;
         }
 
-        /* 双击放大效果 */
         .warm-tip-window.active {
             width: 320px;
             height: 80px;
             font-size: 20px;
-            transform: scale(1.15);
+            transform: scale(1.15) rotate(2deg);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 2000;
+            animation: bounce 0.5s ease;
         }
 
-        /* 粒子效果容器 */
-        .particle {
+        /* 气泡标签 */
+        .tip-tag {
+            position: absolute;
+            top: -8px;
+            right: 15px;
+            background: rgba(255,255,255,0.9);
+            color: #666;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .tip-tag {
+            background: rgba(60,60,90,0.9);
+            color: #ccc;
+        }
+
+        /* 文字效果 */
+        .text-flicker {
+            animation: flicker 3s ease-in-out infinite;
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(45deg, var(--text-color), rgba(100,100,100,0.7));
+        }
+
+        /* 粒子和装饰元素 */
+        .particle, .decor-icon {
             position: absolute;
             border-radius: 50%;
             pointer-events: none;
             z-index: 999;
         }
 
-        /* 新增动画效果 */
+        .decor-icon {
+            font-size: 16px;
+            opacity: 0.7;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        /* 彩虹轨迹 */
+        .rainbow-trail {
+            position: absolute;
+            pointer-events: none;
+            z-index: 998;
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fadeOut 1s forwards;
+        }
+
+        /* 音乐播放器 */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--control-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            z-index: 3000;
+            backdrop-filter: blur(3px);
+        }
+
+        .music-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #8ec5fc, #e0c3fc);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode .music-btn {
+            background: linear-gradient(45deg, #4a6fa5, #6b5ca5);
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .music-info {
+            font-size: 13px;
+            color: var(--text-color);
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 时钟组件 */
+        .clock {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--control-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            z-index: 3000;
+            backdrop-filter: blur(3px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .clock-time {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .clock-date {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 底部控制区 */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--control-bg);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
+            z-index: 3000;
+            backdrop-filter: blur(3px);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #8ec5fc, #e0c3fc);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .btn {
+            background: linear-gradient(45deg, #4a6fa5, #6b5ca5);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn.clear {
+            background: linear-gradient(45deg, #ff9aa2, #ffb7b2);
+        }
+
+        .dark-mode .btn.clear {
+            background: linear-gradient(45deg, #a54a52, #a56b72);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        /* 右键菜单 */
+        .context-menu {
+            position: absolute;
+            width: 120px;
+            background: var(--control-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 5000;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .context-menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .context-menu-item:hover {
+            background: rgba(230,230,255,0.7);
+        }
+
+        .dark-mode .context-menu-item:hover {
+            background: rgba(60,60,90,0.7);
+        }
+
+        .context-menu-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .context-menu-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* 动画效果 */
         @keyframes popIn {
             0% { transform: scale(0) rotate(-10deg); opacity: 0; }
             70% { transform: scale(1.1) rotate(5deg); opacity: 0.9; }
@@ -104,147 +351,342 @@
             100% { box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
         }
 
-        /* 文字渐变 */
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            background-image: linear-gradient(45deg, #333, #666);
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            70% { opacity: 1.1; }
         }
 
-        /* 底部计数提示 */
-        .counter {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.8);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: #666;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 3000;
-            backdrop-filter: blur(3px);
+        @keyframes bounce {
+            0%, 100% { transform: scale(1.15) rotate(2deg); }
+            50% { transform: scale(1.2) rotate(-1deg); }
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, -5px) rotate(1deg); }
+            50% { transform: translate(0, 10px) rotate(0deg); }
+            75% { transform: translate(-10px, -5px) rotate(-1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(2); }
         }
     </style>
+    <!-- 引入图标库（用于装饰元素和按钮） -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="counter">当前温馨提示：<span id="tipCount">0</span> 个</div>
+    <!-- 音乐播放器 -->
+    <div class="music-player">
+        <button class="music-btn" id="musicBtn">
+            <i class="fas fa-play"></i>
+        </button>
+        <div class="music-info">轻松背景音乐</div>
+    </div>
+
+    <!-- 时钟组件 -->
+    <div class="clock">
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">2025-01-01</div>
+    </div>
+
+    <!-- 底部控制区 -->
+    <div class="control-panel">
+        <div class="counter">气泡：<span id="tipCount">0</span> 个</div>
+        <button class="btn add" id="addBtn">新增气泡</button>
+        <button class="btn clear" id="clearBtn">清空所有</button>
+        <button class="theme-toggle" id="themeToggle" title="切换主题">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- 右键菜单 -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" data-action="copy">复制文字</div>
+        <div class="context-menu-item" data-action="top">置顶窗口</div>
+        <div class="context-menu-item" data-action="random">随机位置</div>
+        <div class="context-menu-item" data-action="close">关闭气泡</div>
+    </div>
 
     <script>
-        const tips = [
-            '多喝水哦', '保持微笑呀', '每天都要元气满满',
-            '记得吃水果', '保持好心情', '好好爱自己', '我想你了',
-            '梦想成真', '期待下一次见面', '金榜题名',
-            '顺顺利利', '早点休息', '愿所有烦恼都消失',
-            '别熬夜', '今天过得开心嘛', '天冷了，多穿衣服',
-            '你超棒的！', '加油呀～', '一切都会好起来',
-            '享受当下', '平安喜乐', '万事胜意', '被世界温柔以待'
+        // 1. 基础配置
+        const wordLib = {
+            prefix: ['悄悄说', '记得', '一定要', '愿你', '希望你', '别忘了', '偷偷告诉你', '其实', '此刻', '忽然觉得'],
+            action: ['好好吃饭', '认真休息', '保持快乐', '享受时光', '善待自己', '坚持热爱', '拥抱生活', '放慢脚步', '积攒美好', '传递温暖'],
+            emotion: ['甜甜的', '暖暖的', '元气满满的', '温柔的', '坚定的', '轻松的', '治愈的', '安心的', '雀跃的', '从容的'],
+            result: ['万事顺意', '好运常在', '笑容常在', '被爱包围', '收获惊喜', '平安喜乐', '心想事成', '日日顺心', '烦恼消散', '幸福感满溢'],
+            scene: ['天凉添衣', '天热多喝水', '阴雨天带伞', '熬夜伤身体', '空腹别喝咖啡', '久坐记得拉伸', '累了就歇会儿', '睡前别玩手机'],
+            encourage: ['你真的很棒', '再坚持一下', '你比想象中厉害', '不要轻易放弃', '你值得所有美好', '继续闪闪发光', '你的努力会有回报'],
+            suffix: ['呀～', '哦～', '呢', '呀', '哦', '呀！', '哦！', '呢～']
+        };
+
+        const textTemplates = [
+            '{prefix}，{action}{suffix}',
+            '{emotion}{action}，{result}{suffix}',
+            '{scene}，{emotion}过一天{suffix}',
+            '{encourage}，{action}就好{suffix}',
+            '{prefix}，{emotion}你最可爱{suffix}',
+            '{action}，{result}呀～',
+            '{prefix}，{scene}，别大意{suffix}',
+            '{emotion}时光里，{result}{suffix}',
+            '{encourage}，未来可期{suffix}',
+            '{prefix}，{result}，因为有你{suffix}'
         ];
 
-        // 增强版颜色库（更柔和美观）
+        // 气泡标签库
+        const tipTags = ['治愈', '提醒', '鼓励', '美好', '温暖', '幸运', '日常', '祝福'];
+
+        // 装饰图标库（Font Awesome图标）
+        const decorIcons = ['❤️', '⭐', '☁️', '🌸', '✨', '💖', '🌙', '🌿', '💫', '☀️'];
+
+        // 颜色库
         const bgColors = [
             'rgba(255, 221, 225, 0.85)', 'rgba(191, 239, 255, 0.85)', 'rgba(204, 255, 204, 0.85)',
-            'rgba(230, 230, 255, 0.85)', 'rgba(255, 255, 204, 0.85)', 'rgba(255, 218, 225, 0.85)',
-            'rgba(255, 230, 204, 0.85)', 'rgba(221, 255, 255, 0.85)', 'rgba(240, 230, 255, 0.85)',
-            'rgba(255, 240, 245, 0.85)', 'rgba(240, 255, 240, 0.85)', 'rgba(255, 250, 240, 0.85)',
-            'rgba(225, 242, 255, 0.85)', 'rgba(255, 236, 210, 0.85)', 'rgba(237, 246, 255, 0.85)'
+            'rgba(230, 230, 255, 0.85)', 'rgba(255, 255, 204, 0.85)', 'rgba(255, 218, 225, 0.85)'
         ];
 
-        // 边框渐变颜色对
         const borderColorPairs = [
             ['#ff9aa2', '#ffb7b2'], ['#8ec5fc', '#e0c3fc'], ['#a8edea', '#fed6e3'],
-            ['#ffd1ff', '#fa8bff'], ['#f9f586', '#f8d886'], ['#caffbf', '#9bf6ff'],
-            ['#ffadad', '#ffd6a5'], ['#fdffb6', '#caffc7'], ['#9bf6ff', '#bdb2ff']
+            ['#ffd1ff', '#fa8bff'], ['#f9f586', '#f8d886'], ['#caffbf', '#9bf6ff']
         ];
 
-        // 粒子颜色库
         const particleColors = [
-            'rgba(255, 154, 162, 0.7)', 'rgba(142, 197, 252, 0.7)', 'rgba(168, 237, 234, 0.7)',
-            'rgba(255, 209, 255, 0.7)', 'rgba(249, 245, 134, 0.7)', 'rgba(202, 255, 191, 0.7)'
+            'rgba(255, 154, 162, 0.7)', 'rgba(142, 197, 252, 0.7)', 'rgba(168, 237, 234, 0.7)'
         ];
 
+        // 彩虹色数组
+        const rainbowColors = [
+            'rgba(255,0,0,0.7)', 'rgba(255,165,0,0.7)', 'rgba(255,255,0,0.7)',
+            'rgba(0,255,0,0.7)', 'rgba(0,0,255,0.7)', 'rgba(75,0,130,0.7)',
+            'rgba(238,130,238,0.7)'
+        ];
+
+        // 2. 全局变量
         let tipCount = 0;
         const tipCountElement = document.getElementById('tipCount');
+        const contextMenu = document.getElementById('contextMenu');
+        const musicBtn = document.getElementById('musicBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const clockTime = document.getElementById('clockTime');
+        const clockDate = document.getElementById('clockDate');
+        let currentWindow = null;
+        let audio = null;
+        let isDarkMode = false;
 
-        // 显示温馨提示窗口
+        // 3. 工具函数
+        // 生成随机文字
+        function generateRandomText() {
+            const template = textTemplates[Math.floor(Math.random() * textTemplates.length)];
+            return template.replace(/{(\w+)}/g, (match, key) => {
+                const words = wordLib[key];
+                return words[Math.floor(Math.random() * words.length)];
+            });
+        }
+
+        // 随机获取颜色对
+        function getRandomColorPair() {
+            const pair = borderColorPairs[Math.floor(Math.random() * borderColorPairs.length)];
+            const bgColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+            return { bgColor, border1: pair[0], border2: pair[1] };
+        }
+
+        // 4. 新增功能实现
+        // 4.1 音乐播放器
+        function initMusicPlayer() {
+            // 创建音频元素（使用免费公共音乐）
+            audio = new Audio('https://cdn.pixabay.com/download/audio/2022/01/18/audio_7f0d99a06f.mp3?filename=gentle-piano-113910.mp3');
+            audio.loop = true;
+            audio.volume = 0.3;
+
+            musicBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play().catch(err => console.log('音乐播放失败:', err));
+                    musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                } else {
+                    audio.pause();
+                    musicBtn.innerHTML = '<i class="fas fa-play"></i>';
+                }
+            });
+        }
+
+        // 4.2 时钟功能
+        function updateClock() {
+            const now = new Date();
+            // 时间格式化：HH:MM:SS
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            clockTime.textContent = `${hours}:${minutes}:${seconds}`;
+
+            // 日期格式化：YYYY-MM-DD 星期X
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekDay = weekDays[now.getDay()];
+            clockDate.textContent = `${year}-${month}-${day} 周${weekDay}`;
+        }
+
+        // 4.3 主题切换
+        function initThemeToggle() {
+            themeToggle.addEventListener('click', function() {
+                isDarkMode = !isDarkMode;
+                document.documentElement.classList.toggle('dark-mode', isDarkMode);
+                // 切换图标
+                if (isDarkMode) {
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
+        }
+
+        // 4.4 随机装饰图标
+        function createDecorIcon() {
+            const icon = document.createElement('div');
+            icon.className = 'decor-icon';
+            icon.textContent = decorIcons[Math.floor(Math.random() * decorIcons.length)];
+
+            // 随机位置和大小
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const size = 12 + Math.random() * 8;
+
+            icon.style.left = Math.random() * screenWidth + 'px';
+            icon.style.top = Math.random() * screenHeight + 'px';
+            icon.style.fontSize = size + 'px';
+            icon.style.animationDuration = 5 + Math.random() * 10 + 's';
+
+            document.body.appendChild(icon);
+
+            // 定时移除（避免内存占用）
+            setTimeout(() => {
+                icon.style.opacity = '0';
+                setTimeout(() => icon.remove(), 1000);
+            }, 15000 + Math.random() * 10000);
+        }
+
+        // 4.5 彩虹轨迹
+        function createRainbowTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'rainbow-trail';
+            trail.style.backgroundColor = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+
+            document.body.appendChild(trail);
+
+            // 自动移除
+            setTimeout(() => {
+                trail.remove();
+            }, 1000);
+        }
+
+        // 5. 气泡核心功能
         function showWarmTip() {
             const tipWindow = document.createElement('div');
             tipWindow.className = 'warm-tip-window text-gradient';
-
-            // 随机选择内容、背景色、边框色
-            const text = tips[Math.floor(Math.random() * tips.length)];
-            const bgColor = bgColors[Math.floor(Math.random() * bgColors.length)];
-            const [borderColor1, borderColor2] = borderColorPairs[Math.floor(Math.random() * borderColorPairs.length)];
-
+            
+            // 生成内容和样式
+            const text = generateRandomText();
+            const { bgColor, border1, border2 } = getRandomColorPair();
+            const tag = tipTags[Math.floor(Math.random() * tipTags.length)];
+            
             tipWindow.innerText = text;
             tipWindow.style.backgroundColor = bgColor;
-            tipWindow.style.setProperty('--border-color1', borderColor1);
-            tipWindow.style.setProperty('--border-color2', borderColor2);
+            tipWindow.style.setProperty('--border-color1', border1);
+            tipWindow.style.setProperty('--border-color2', border2);
 
-            // 随机位置（优化：避免太靠近边缘）
+            // 添加标签
+            const tagElement = document.createElement('div');
+            tagElement.className = 'tip-tag';
+            tagElement.innerText = tag;
+            tipWindow.appendChild(tagElement);
+
+            // 随机位置
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const winWidth = 250;
             const winHeight = 60;
 
-            // 边缘留20px间距
             const x = 20 + Math.random() * (screenWidth - winWidth - 40);
             const y = 20 + Math.random() * (screenHeight - winHeight - 40);
 
             tipWindow.style.left = x + 'px';
             tipWindow.style.top = y + 'px';
 
-            // 随机添加浮动动画
-            if (Math.random() > 0.3) {
-                tipWindow.style.animation = 'float 5s ease-in-out infinite';
+            // 随机动画
+            const animType = Math.random();
+            if (animType > 0.6) {
+                tipWindow.style.animation = 'float 8s ease-in-out infinite';
+            } else if (animType > 0.3) {
+                tipWindow.style.animation = 'pulse 4s ease-in-out infinite';
             } else {
-                tipWindow.style.animation = 'pulse 3s ease-in-out infinite';
+                tipWindow.style.animation = 'drift 12s ease-in-out infinite';
             }
+
+            // 文字闪烁效果
+            if (Math.random() < 0.2) {
+                tipWindow.classList.add('text-flicker');
+            }
+
+            // 碰撞检测速度
+            tipWindow.dataset.speedX = (Math.random() - 0.5) * 0.5;
+            tipWindow.dataset.speedY = (Math.random() - 0.5) * 0.5;
 
             // 拖拽功能
             makeDraggable(tipWindow);
 
-            // 点击关闭 + 粒子效果
+            // 左键点击：变色+粒子
             tipWindow.onclick = function(e) {
-                e.stopPropagation(); // 阻止冒泡
-                createParticles(e.clientX, e.clientY); // 创建粒子效果
-                this.style.opacity = "0";
-                this.style.transform = "scale(0.8)";
-                setTimeout(() => {
-                    if (this.parentNode) {
-                        this.parentNode.removeChild(this);
-                        tipCount--;
-                        updateTipCount();
-                    }
-                }, 300);
+                e.stopPropagation();
+                const { bgColor: newBg, border1: newBorder1, border2: newBorder2 } = getRandomColorPair();
+                this.style.backgroundColor = newBg;
+                this.style.setProperty('--border-color1', newBorder1);
+                this.style.setProperty('--border-color2', newBorder2);
+                createParticles(e.clientX, e.clientY);
             };
 
-            // 双击放大/还原
+            // 双击放大
             tipWindow.ondblclick = function(e) {
                 e.stopPropagation();
                 this.classList.toggle('active');
                 if (this.classList.contains('active')) {
-                    this.style.animation = 'none'; // 取消浮动动画
+                    this.innerText = generateRandomText();
+                    // 重新添加标签
+                    const newTag = tipTags[Math.floor(Math.random() * tipTags.length)];
+                    this.querySelector('.tip-tag').innerText = newTag;
                 } else {
-                    // 恢复随机动画
-                    if (Math.random() > 0.3) {
-                        this.style.animation = 'float 5s ease-in-out infinite';
-                    } else {
-                        this.style.animation = 'pulse 3s ease-in-out infinite';
-                    }
+                    this.innerText = generateRandomText();
+                    const newTag = tipTags[Math.floor(Math.random() * tipTags.length)];
+                    this.querySelector('.tip-tag').innerText = newTag;
                 }
             };
 
-            // 自动躲避窗口重叠（简单版）
+            // 右键菜单
+            tipWindow.oncontextmenu = function(e) {
+                e.preventDefault();
+                currentWindow = this;
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = e.clientX + 'px';
+                contextMenu.style.top = e.clientY + 'px';
+            };
+
+            // 避免重叠
             avoidOverlap(tipWindow);
 
             document.body.appendChild(tipWindow);
             tipCount++;
             updateTipCount();
+
+            // 自动移动
+            startAutoMove(tipWindow);
         }
 
-        // 拖拽功能实现
+        // 拖拽功能
         function makeDraggable(element) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
@@ -252,27 +694,20 @@
 
             function dragStart(e) {
                 e.preventDefault();
-                // 获取鼠标初始位置
                 pos3 = e.clientX;
                 pos4 = e.clientY;
-
-                // 提升层级
                 element.style.zIndex = 2000;
-
-                // 绑定鼠标移动和松开事件
                 document.onmousemove = dragMove;
                 document.onmouseup = dragEnd;
             }
 
             function dragMove(e) {
                 e.preventDefault();
-                // 计算移动距离
                 pos1 = pos3 - e.clientX;
                 pos2 = pos4 - e.clientY;
                 pos3 = e.clientX;
                 pos4 = e.clientY;
 
-                // 更新元素位置，限制在窗口内
                 const newLeft = element.offsetLeft - pos1;
                 const newTop = element.offsetTop - pos2;
                 const screenWidth = window.innerWidth;
@@ -280,7 +715,6 @@
                 const winWidth = element.offsetWidth;
                 const winHeight = element.offsetHeight;
 
-                // 边界检测
                 if (newLeft >= 0 && newLeft <= screenWidth - winWidth) {
                     element.style.left = newLeft + "px";
                 }
@@ -290,15 +724,50 @@
             }
 
             function dragEnd() {
-                // 恢复层级
                 element.style.zIndex = 1000;
-                // 解绑事件
                 document.onmousemove = null;
                 document.onmouseup = null;
             }
         }
 
-        // 简单的窗口重叠避免
+        // 自动移动和碰撞
+        function startAutoMove(element) {
+            function move() {
+                const screenWidth = window.innerWidth;
+                const screenHeight = window.innerHeight;
+                const winWidth = element.offsetWidth;
+                const winHeight = element.offsetHeight;
+
+                let x = parseInt(element.style.left) || 0;
+                let y = parseInt(element.style.top) || 0;
+                let speedX = parseFloat(element.dataset.speedX);
+                let speedY = parseFloat(element.dataset.speedY);
+
+                // 边界碰撞
+                if (x <= 0 || x >= screenWidth - winWidth) {
+                    speedX = -speedX;
+                    element.dataset.speedX = speedX;
+                }
+                if (y <= 0 || y >= screenHeight - winHeight) {
+                    speedY = -speedY;
+                    element.dataset.speedY = speedY;
+                }
+
+                x += speedX;
+                y += speedY;
+
+                element.style.left = x + 'px';
+                element.style.top = y + 'px';
+
+                if (element.parentNode) {
+                    requestAnimationFrame(move);
+                }
+            }
+
+            move();
+        }
+
+        // 避免重叠
         function avoidOverlap(newWindow) {
             const allWindows = document.querySelectorAll('.warm-tip-window');
             if (allWindows.length <= 1) return;
@@ -306,7 +775,6 @@
             const newRect = newWindow.getBoundingClientRect();
             let overlap = false;
 
-            // 检查与其他窗口的重叠
             allWindows.forEach(window => {
                 if (window === newWindow) return;
                 const rect = window.getBoundingClientRect();
@@ -320,7 +788,6 @@
                 }
             });
 
-            // 如果重叠，重新调整位置
             if (overlap) {
                 const screenWidth = window.innerWidth;
                 const screenHeight = window.innerHeight;
@@ -335,20 +802,19 @@
             }
         }
 
-        // 创建粒子效果
+        // 粒子效果
         function createParticles(x, y) {
-            const particleCount = 15; // 粒子数量
+            const particleCount = 15;
 
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
 
-                // 随机粒子大小、颜色、位置
                 const size = 3 + Math.random() * 8;
                 const color = particleColors[Math.floor(Math.random() * particleColors.length)];
-                const angle = Math.random() * Math.PI * 2; // 随机角度
-                const speed = 2 + Math.random() * 5; // 随机速度
-                const distance = 5 + Math.random() * 20; // 随机距离
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 5;
+                const distance = 5 + Math.random() * 20;
 
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
@@ -356,9 +822,8 @@
                 particle.style.left = x - size/2 + 'px';
                 particle.style.top = y - size/2 + 'px';
 
-                // 粒子动画
                 let startTime = Date.now();
-                const duration = 800 + Math.random() * 500; // 动画时长
+                const duration = 800 + Math.random() * 500;
 
                 function updateParticle() {
                     const elapsed = Date.now() - startTime;
@@ -367,7 +832,6 @@
                         return;
                     }
 
-                    // 计算粒子位置
                     const progress = elapsed / duration;
                     const currentDistance = distance * progress;
                     const newX = x - size/2 + Math.cos(angle) * currentDistance;
@@ -375,7 +839,7 @@
 
                     particle.style.left = newX + 'px';
                     particle.style.top = newY + 'px';
-                    particle.style.opacity = 1 - progress; // 逐渐透明
+                    particle.style.opacity = 1 - progress;
 
                     requestAnimationFrame(updateParticle);
                 }
@@ -385,51 +849,158 @@
             }
         }
 
-        // 更新计数显示
+        // 更新计数
         function updateTipCount() {
             tipCountElement.innerText = tipCount;
         }
 
-        // 点击空白处添加新窗口
-        document.body.onclick = function(e) {
+        // 右键菜单事件
+        contextMenu.addEventListener('click', function(e) {
+            const action = e.target.dataset.action;
+            if (!currentWindow) return;
+
+            switch(action) {
+                case 'copy':
+                    navigator.clipboard.writeText(currentWindow.innerText)
+                        .then(() => {
+                            const originalText = currentWindow.innerText;
+                            currentWindow.innerText = '复制成功！';
+                            setTimeout(() => {
+                                currentWindow.innerText = originalText;
+                            }, 1000);
+                        });
+                    break;
+                case 'top':
+                    currentWindow.style.zIndex = 3000;
+                    break;
+                case 'random':
+                    const screenWidth = window.innerWidth;
+                    const screenHeight = window.innerHeight;
+                    const winWidth = currentWindow.offsetWidth;
+                    const winHeight = currentWindow.offsetHeight;
+
+                    const x = 20 + Math.random() * (screenWidth - winWidth - 40);
+                    const y = 20 + Math.random() * (screenHeight - winHeight - 40);
+
+                    currentWindow.style.left = x + 'px';
+                    currentWindow.style.top = y + 'px';
+                    break;
+                case 'close':
+                    createParticles(
+                        parseInt(currentWindow.style.left) + currentWindow.offsetWidth/2,
+                        parseInt(currentWindow.style.top) + currentWindow.offsetHeight/2
+                    );
+                    currentWindow.style.opacity = "0";
+                    currentWindow.style.transform = "scale(0.8)";
+                    setTimeout(() => {
+                        if (currentWindow.parentNode) {
+                            currentWindow.parentNode.removeChild(currentWindow);
+                            tipCount--;
+                            updateTipCount();
+                        }
+                    }, 300);
+                    break;
+            }
+
+            contextMenu.style.display = 'none';
+            currentWindow = null;
+        });
+
+        // 点击空白处关闭菜单+添加气泡+彩虹轨迹
+        document.addEventListener('click', function(e) {
+            contextMenu.style.display = 'none';
+            currentWindow = null;
+
             if (e.target === document.body) {
                 showWarmTip();
+                createRainbowTrail(e.clientX, e.clientY);
             }
-        };
+        });
 
-        // 启动逻辑：创建30个窗口（减少数量避免过于拥挤）
-        const totalWindows = 30;
-        const intervalDelay = 150; // 0.15秒间隔
+        // 鼠标移动时生成少量彩虹轨迹（可选）
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() < 0.1) { // 10%概率生成，避免过多
+                createRainbowTrail(e.clientX, e.clientY);
+            }
+        });
 
-        for (let i = 0; i < totalWindows; i++) {
-            setTimeout(() => {
-                showWarmTip();
-            }, i * intervalDelay);
-        }
+        // 按钮事件
+        document.getElementById('addBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            showWarmTip();
+        });
 
-        // 窗口大小改变时重新调整位置
-        window.onresize = function() {
+        document.getElementById('clearBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
             const allWindows = document.querySelectorAll('.warm-tip-window');
             allWindows.forEach(window => {
-                const rect = window.getBoundingClientRect();
-                const screenWidth = window.innerWidth;
-                const screenHeight = window.innerHeight;
-                const winWidth = window.offsetWidth;
-                const winHeight = window.offsetHeight;
-
-                // 确保窗口在可视区域内
-                let newLeft = rect.left;
-                let newTop = rect.top;
-
-                if (newLeft < 0) newLeft = 20;
-                if (newLeft > screenWidth - winWidth) newLeft = screenWidth - winWidth - 20;
-                if (newTop < 0) newTop = 20;
-                if (newTop > screenHeight - winHeight) newTop = screenHeight - winHeight - 20;
-
-                window.style.left = newLeft + 'px';
-                window.style.top = newTop + 'px';
+                createParticles(
+                    parseInt(window.style.left) + window.offsetWidth/2,
+                    parseInt(window.style.top) + window.offsetHeight/2
+                );
+                window.style.opacity = "0";
+                window.style.transform = "scale(0.8)";
+                setTimeout(() => {
+                    if (window.parentNode) {
+                        window.parentNode.removeChild(window);
+                    }
+                }, 300);
             });
-        };
+            tipCount = 0;
+            updateTipCount();
+        });
+
+        // 6. 初始化功能
+        function init() {
+            // 初始化音乐播放器
+            initMusicPlayer();
+            
+            // 初始化时钟
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // 初始化主题切换
+            initThemeToggle();
+            
+            // 定时生成装饰图标
+            setInterval(createDecorIcon, 3000);
+            
+            // 初始创建30个气泡
+            const totalWindows = 30;
+            const intervalDelay = 150;
+
+            for (let i = 0; i < totalWindows; i++) {
+                setTimeout(() => {
+                    showWarmTip();
+                }, i * intervalDelay);
+            }
+
+            // 窗口大小改变时调整位置
+            window.onresize = function() {
+                const allWindows = document.querySelectorAll('.warm-tip-window');
+                allWindows.forEach(window => {
+                    const rect = window.getBoundingClientRect();
+                    const screenWidth = window.innerWidth;
+                    const screenHeight = window.innerHeight;
+                    const winWidth = window.offsetWidth;
+                    const winHeight = window.offsetHeight;
+
+                    let newLeft = rect.left;
+                    let newTop = rect.top;
+
+                    if (newLeft < 0) newLeft = 20;
+                    if (newLeft > screenWidth - winWidth) newLeft = screenWidth - winWidth - 20;
+                    if (newTop < 0) newTop = 20;
+                    if (newTop > screenHeight - winHeight) newTop = screenHeight - winHeight - 20;
+
+                    window.style.left = newLeft + 'px';
+                    window.style.top = newTop + 'px';
+                });
+            };
+        }
+
+        // 启动应用
+        window.addEventListener('load', init);
     </script>
 </body>
 </html>
