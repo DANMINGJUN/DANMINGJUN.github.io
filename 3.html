@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试版本4.0</title>
+    <title>测试版本3</title>
     <style>
         body {
             margin: 0;
@@ -14,10 +14,8 @@
             width: 100vw;
             font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
             background-image: radial-gradient(circle at 10% 20%, rgba(255,221,225,0.3) 0%, rgba(204,235,255,0.3) 90%);
-            transition: background 1s ease;
         }
 
-        /* 气泡样式 */
         .warm-tip-window {
             position: absolute;
             width: 250px;
@@ -33,24 +31,26 @@
             color: #333;
             z-index: 1000;
             user-select: none;
-            cursor: move;
+            cursor: move; /* 拖拽光标 */
             animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); /* 背景模糊 */
             padding: 0 15px;
             text-align: center;
             word-break: break-all;
         }
 
+        /* 固定气泡样式（不允许拖拽和自动移动） */
         .fixed-tip-window {
-            position: fixed;
-            cursor: default;
-            z-index: 2500;
-            animation: float 8s ease-in-out infinite;
-            width: 280px;
+            position: fixed; /* 固定定位 */
+            cursor: default; /* 普通光标 */
+            z-index: 2500; /* 高于普通气泡 */
+            animation: float 8s ease-in-out infinite; /* 保持漂浮动画 */
+            width: 280px; /* 稍微宽一点 */
             height: 70px;
         }
 
+        /* 渐变边框 */
         .warm-tip-window::before {
             content: '';
             position: absolute;
@@ -65,6 +65,7 @@
             transition: opacity 0.3s ease;
         }
 
+        /* 鼠标悬停效果增强 */
         .warm-tip-window:hover {
             transform: scale(1.1) rotate(1deg);
             z-index: 1001;
@@ -73,7 +74,7 @@
         }
 
         .fixed-tip-window:hover {
-            transform: scale(1.15) rotate(1deg);
+            transform: scale(1.15) rotate(1deg); /* 悬停效果更强 */
             z-index: 3000;
         }
 
@@ -81,6 +82,7 @@
             opacity: 1;
         }
 
+        /* 双击放大效果 */
         .warm-tip-window.active {
             width: 320px;
             height: 80px;
@@ -97,11 +99,12 @@
             font-size: 22px;
         }
 
+        /* 文字闪烁动画 */
         .text-flicker {
             animation: flicker 3s ease-in-out infinite;
         }
 
-        /* 粒子效果 */
+        /* 粒子效果容器 */
         .particle {
             position: absolute;
             border-radius: 50%;
@@ -109,7 +112,7 @@
             z-index: 999;
         }
 
-        /* 动画定义 */
+        /* 新增动画效果 */
         @keyframes popIn {
             0% { transform: scale(0) rotate(-10deg); opacity: 0; }
             70% { transform: scale(1.1) rotate(5deg); opacity: 0.9; }
@@ -147,6 +150,7 @@
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
+        /* 文字渐变 */
         .text-gradient {
             background-clip: text;
             -webkit-background-clip: text;
@@ -154,7 +158,7 @@
             background-image: linear-gradient(45deg, #333, #666);
         }
 
-        /* 控制面板 */
+        /* 底部控制区 */
         .control-panel {
             position: fixed;
             bottom: 20px;
@@ -200,7 +204,7 @@
             background: linear-gradient(45deg, #ff9aa2, #ffb7b2);
         }
 
-        /* 右键菜单 */
+        /* 右键菜单样式 */
         .context-menu {
             position: absolute;
             width: 120px;
@@ -231,173 +235,6 @@
         .context-menu-item:last-child {
             border-radius: 0 0 8px 8px;
         }
-
-        /* 表白界面样式 - 重新设计 */
-        .confession-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, 
-                #f093fb 0%, 
-                #f5576c 25%, 
-                #4facfe 50%, 
-                #00f2fe 75%, 
-                #a8edea 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            z-index: 9999;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* 背景渐变动画 - 更柔和的过渡 */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* 光晕背景 */
-        .confession-container::before {
-            content: '';
-            position: absolute;
-            width: 80vw;
-            height: 80vw;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-            filter: blur(50px);
-            animation: glowPulse 8s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.7; }
-            50% { transform: scale(1.1) translate(-10px, -10px); opacity: 1; }
-        }
-
-        /* 装饰性网格背景 */
-        .confession-container::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: 1;
-            animation: gridMove 20s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
-
-        /* 表白文字样式 - 重新设计 */
-        .confession-text {
-            font-size: clamp(4rem, 10vw, 8rem);
-            font-weight: 800;
-            background: linear-gradient(120deg, 
-                #ffffff 0%, 
-                #f8f9fa 25%, 
-                #e9ecef 50%, 
-                #dee2e6 75%, 
-                #ffffff 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            position: relative;
-            z-index: 2;
-            text-shadow: 
-                0 2px 10px rgba(0,0,0,0.1),
-                0 4px 20px rgba(0,0,0,0.05);
-            animation: 
-                textFloat 6s ease-in-out infinite,
-                textGlow 4s ease-in-out infinite alternate;
-            margin-bottom: 2rem;
-            letter-spacing: 0.1em;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        @keyframes textGlow {
-            from { 
-                text-shadow: 
-                    0 2px 10px rgba(0,0,0,0.1),
-                    0 4px 20px rgba(0,0,0,0.05),
-                    0 0 20px rgba(255,255,255,0.3); 
-            }
-            to { 
-                text-shadow: 
-                    0 2px 10px rgba(0,0,0,0.15),
-                    0 4px 20px rgba(0,0,0,0.1),
-                    0 0 40px rgba(255,255,255,0.6),
-                    0 0 80px rgba(255,255,255,0.3); 
-            }
-        }
-
-        @keyframes textFloat {
-            0% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-10px) rotate(0.5deg); }
-            50% { transform: translateY(0) rotate(0deg); }
-            75% { transform: translateY(10px) rotate(-0.5deg); }
-            100% { transform: translateY(0) rotate(0deg); }
-        }
-
-        /* 副标题 - 重新设计 */
-        .confession-subtext {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 2;
-            animation: subtextFade 6s ease-in-out infinite alternate;
-            letter-spacing: 0.2em;
-            text-align: center;
-            padding: 0 2rem;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        @keyframes subtextFade {
-            from { 
-                opacity: 0.8; 
-                transform: scale(1);
-                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            }
-            to { 
-                opacity: 1; 
-                transform: scale(1.05);
-                box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            }
-        }
-
-        /* 装饰性光点 */
-        .decorative-dot {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: dotTwinkle 4s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        @keyframes dotTwinkle {
-            0%, 100% { opacity: 0; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
-        }
     </style>
 </head>
 <body>
@@ -415,14 +252,8 @@
         <div class="context-menu-item" data-action="close">关闭气泡</div>
     </div>
 
-    <!-- 第二界面容器 -->
-    <div class="confession-container" id="confessionContainer">
-        <div class="confession-text">当ててみて</div>
-        <div class="confession-subtext">ちょっとあなたが好きなのかな</div>
-    </div>
-
     <script>
-        // 核心变量
+        // 核心：动态文字生成系统（模板+替换词库，无限组合）
         const wordLib = {
             prefix: ['悄悄说', '记得', '一定要', '愿你', '希望你', '别忘了', '偷偷告诉你', '其实', '此刻', '忽然觉得'],
             action: ['好好吃饭', '认真休息', '保持快乐', '享受时光', '善待自己', '坚持热爱', '拥抱生活', '放慢脚步', '积攒美好', '传递温暖'],
@@ -433,6 +264,7 @@
             suffix: ['呀～', '哦～', '呢', '呀', '哦', '呀！', '哦！', '呢～']
         };
 
+        // 文字组合模板
         const textTemplates = [
             '{prefix}，{action}{suffix}',
             '{emotion}{action}，{result}{suffix}',
@@ -452,6 +284,7 @@
             '{prefix}，{emotion}{action}，好运自来{suffix}'
         ];
 
+        // 颜色库
         const bgColors = [
             'rgba(255, 221, 225, 0.85)', 'rgba(191, 239, 255, 0.85)', 'rgba(204, 255, 204, 0.85)',
             'rgba(230, 230, 255, 0.85)', 'rgba(255, 255, 204, 0.85)', 'rgba(255, 218, 225, 0.85)',
@@ -460,26 +293,24 @@
             'rgba(225, 242, 255, 0.85)', 'rgba(255, 236, 210, 0.85)', 'rgba(237, 246, 255, 0.85)'
         ];
 
+        // 边框渐变颜色对
         const borderColorPairs = [
             ['#ff9aa2', '#ffb7b2'], ['#8ec5fc', '#e0c3fc'], ['#a8edea', '#fed6e3'],
             ['#ffd1ff', '#fa8bff'], ['#f9f586', '#f8d886'], ['#caffbf', '#9bf6ff'],
             ['#ffadad', '#ffd6a5'], ['#fdffb6', '#caffc7'], ['#9bf6ff', '#bdb2ff']
         ];
 
+        // 粒子颜色库
         const particleColors = [
             'rgba(255, 154, 162, 0.7)', 'rgba(142, 197, 252, 0.7)', 'rgba(168, 237, 234, 0.7)',
             'rgba(255, 209, 255, 0.7)', 'rgba(249, 245, 134, 0.7)', 'rgba(202, 255, 191, 0.7)'
         ];
 
-        // 关键控制变量
         let tipCount = 0;
-        let clickCount = 0; // 记录新增气泡点击次数
-        let hasClearedFirst = false; // 标记是否首次清空
         const tipCountElement = document.getElementById('tipCount');
         const contextMenu = document.getElementById('contextMenu');
-        const confessionContainer = document.getElementById('confessionContainer');
         let currentWindow = null;
-        let fixedTipWindow = null;
+        let fixedTipWindow = null; // 存储固定气泡实例
 
         // 生成随机文字
         function generateRandomText() {
@@ -502,6 +333,7 @@
             const tipWindow = document.createElement('div');
             tipWindow.className = 'warm-tip-window text-gradient';
             
+            // 生成内容和样式
             const text = generateRandomText();
             const { bgColor, border1, border2 } = getRandomColorPair();
             
@@ -510,6 +342,7 @@
             tipWindow.style.setProperty('--border-color1', border1);
             tipWindow.style.setProperty('--border-color2', border2);
 
+            // 随机位置（避免边缘）
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const winWidth = 250;
@@ -521,6 +354,7 @@
             tipWindow.style.left = x + 'px';
             tipWindow.style.top = y + 'px';
 
+            // 随机动画效果
             const animType = Math.random();
             if (animType > 0.6) {
                 tipWindow.style.animation = 'float 8s ease-in-out infinite';
@@ -530,22 +364,28 @@
                 tipWindow.style.animation = 'drift 12s ease-in-out infinite';
             }
 
+            // 20%概率添加文字闪烁效果
             if (Math.random() < 0.2) {
                 tipWindow.classList.add('text-flicker');
             }
 
-            tipWindow.dataset.speedX = (Math.random() - 0.5) * 0.5;
+            // 存储初始位置和速度（用于碰撞检测）
+            tipWindow.dataset.speedX = (Math.random() - 0.5) * 0.5; // -0.25 到 0.25
             tipWindow.dataset.speedY = (Math.random() - 0.5) * 0.5;
 
+            // 拖拽功能
             makeDraggable(tipWindow);
 
             // 左键点击：变色+粒子效果
             tipWindow.onclick = function(e) {
                 e.stopPropagation();
+                // 切换颜色
                 const { bgColor: newBg, border1: newBorder1, border2: newBorder2 } = getRandomColorPair();
                 this.style.backgroundColor = newBg;
                 this.style.setProperty('--border-color1', newBorder1);
                 this.style.setProperty('--border-color2', newBorder2);
+                
+                // 粒子效果
                 createParticles(e.clientX, e.clientY);
             };
 
@@ -558,6 +398,7 @@
                     this.innerText = generateRandomText();
                 } else {
                     this.innerText = generateRandomText();
+                    // 恢复动画
                     const animType = Math.random();
                     if (animType > 0.6) {
                         this.style.animation = 'float 8s ease-in-out infinite';
@@ -574,17 +415,20 @@
                 e.preventDefault();
                 currentWindow = this;
                 
+                // 显示菜单
                 contextMenu.style.display = 'block';
                 contextMenu.style.left = e.clientX + 'px';
                 contextMenu.style.top = e.clientY + 'px';
             };
 
+            // 自动躲避重叠
             avoidOverlap(tipWindow);
 
             document.body.appendChild(tipWindow);
             tipCount++;
             updateTipCount();
 
+            // 启动自动移动和碰撞检测
             startAutoMove(tipWindow);
         }
 
@@ -593,15 +437,19 @@
             const tipWindow = document.createElement('div');
             tipWindow.className = 'warm-tip-window text-gradient fixed-tip-window';
             
+            // 自定义文字 - 在这里修改你想要的文字
             const customText = '睡觉要早，记性要好，吃饭要饱，心情要妙～';
-            const colorPair = borderColorPairs[1];
-            const bgColor = bgColors[3];
+            
+            // 选择一个醒目的颜色组合（可以自己调整）
+            const colorPair = borderColorPairs[1]; // 蓝色渐变边框
+            const bgColor = bgColors[3]; // 淡紫色背景
             
             tipWindow.innerText = customText;
             tipWindow.style.backgroundColor = bgColor;
             tipWindow.style.setProperty('--border-color1', colorPair[0]);
             tipWindow.style.setProperty('--border-color2', colorPair[1]);
 
+            // 固定在右下角（距离底部和右侧20px）
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const winWidth = 280;
@@ -613,31 +461,42 @@
             tipWindow.style.left = x + 'px';
             tipWindow.style.top = y + 'px';
 
+            // 固定动画：漂浮效果
             tipWindow.style.animation = 'float 6s ease-in-out infinite';
+
+            // 强制添加文字闪烁效果（可选，不想闪烁可以删除这行）
             tipWindow.classList.add('text-flicker');
 
+            // 左键点击：变色+粒子效果（保持交互）
             tipWindow.onclick = function(e) {
                 e.stopPropagation();
+                // 切换颜色
                 const { bgColor: newBg, border1: newBorder1, border2: newBorder2 } = getRandomColorPair();
                 this.style.backgroundColor = newBg;
                 this.style.setProperty('--border-color1', newBorder1);
                 this.style.setProperty('--border-color2', newBorder2);
+                
+                // 粒子效果
                 createParticles(e.clientX, e.clientY);
             };
 
+            // 双击放大/还原（不改变文字）
             tipWindow.ondblclick = function(e) {
                 e.stopPropagation();
                 this.classList.toggle('active');
             };
 
+            // 右键菜单（隐藏随机位置和关闭功能，保留复制和置顶）
             tipWindow.oncontextmenu = function(e) {
                 e.preventDefault();
                 currentWindow = this;
                 
+                // 显示菜单并隐藏不需要的选项
                 contextMenu.style.display = 'block';
                 contextMenu.style.left = e.clientX + 'px';
                 contextMenu.style.top = e.clientY + 'px';
                 
+                // 隐藏随机位置和关闭选项（固定气泡不允许关闭）
                 contextMenu.querySelectorAll('.context-menu-item').forEach(item => {
                     if (item.dataset.action === 'random' || item.dataset.action === 'close') {
                         item.style.display = 'none';
@@ -648,11 +507,12 @@
             };
 
             document.body.appendChild(tipWindow);
-            fixedTipWindow = tipWindow;
+            fixedTipWindow = tipWindow; // 保存实例，用于窗口大小改变时调整位置
         }
 
         // 拖拽功能
         function makeDraggable(element) {
+            // 固定气泡不允许拖拽，只有普通气泡可以拖拽
             if (element.classList.contains('fixed-tip-window')) return;
             
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -683,6 +543,7 @@
                 const winWidth = element.offsetWidth;
                 const winHeight = element.offsetHeight;
 
+                // 边界检测
                 if (newLeft >= 0 && newLeft <= screenWidth - winWidth) {
                     element.style.left = newLeft + "px";
                 }
@@ -698,7 +559,7 @@
             }
         }
 
-        // 自动移动和碰撞检测
+        // 自动移动和碰撞检测（固定气泡不需要）
         function startAutoMove(element) {
             if (element.classList.contains('fixed-tip-window')) return;
             
@@ -713,21 +574,24 @@
                 let speedX = parseFloat(element.dataset.speedX);
                 let speedY = parseFloat(element.dataset.speedY);
 
+                // 边界碰撞检测
                 if (x <= 0 || x >= screenWidth - winWidth) {
-                    speedX = -speedX;
+                    speedX = -speedX; // 反向
                     element.dataset.speedX = speedX;
                 }
                 if (y <= 0 || y >= screenHeight - winHeight) {
-                    speedY = -speedY;
+                    speedY = -speedY; // 反向
                     element.dataset.speedY = speedY;
                 }
 
+                // 更新位置
                 x += speedX;
                 y += speedY;
 
                 element.style.left = x + 'px';
                 element.style.top = y + 'px';
 
+                // 继续动画
                 if (element.parentNode) {
                     requestAnimationFrame(move);
                 }
@@ -736,7 +600,7 @@
             move();
         }
 
-        // 避免重叠
+        // 避免重叠（固定气泡不需要）
         function avoidOverlap(newWindow) {
             if (newWindow.classList.contains('fixed-tip-window')) return;
             
@@ -825,71 +689,12 @@
             tipCountElement.innerText = tipCount;
         }
 
-        // 创建装饰性光点
-        function createDecorativeDots() {
-            // 创建100个随机光点
-            for (let i = 0; i < 100; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'decorative-dot';
-                
-                // 随机位置
-                const x = Math.random() * window.innerWidth;
-                const y = Math.random() * window.innerHeight;
-                
-                // 随机大小和动画延迟
-                const size = 1 + Math.random() * 3;
-                const delay = Math.random() * 4;
-                
-                dot.style.left = x + 'px';
-                dot.style.top = y + 'px';
-                dot.style.width = size + 'px';
-                dot.style.height = size + 'px';
-                dot.style.animationDelay = delay + 's';
-                
-                confessionContainer.appendChild(dot);
-            }
-        }
-
-        // 显示表白界面
-        function showConfession() {
-            // 隐藏控制面板
-            document.querySelector('.control-panel').style.display = 'none';
-            
-            // 显示表白界面
-            confessionContainer.style.display = 'flex';
-            
-            // 创建装饰性光点
-            createDecorativeDots();
-            
-            // 背景渐变动画
-            document.body.style.background = '#f093fb';
-        }
-
-        // 清空所有气泡（增强版）
-        function clearAllBubbles() {
-            const allWindows = document.querySelectorAll('.warm-tip-window');
-            allWindows.forEach(window => {
-                createParticles(
-                    parseInt(window.style.left) + window.offsetWidth/2,
-                    parseInt(window.style.top) + window.offsetHeight/2
-                );
-                window.style.opacity = "0";
-                window.style.transform = "scale(0.8)";
-                setTimeout(() => {
-                    if (window.parentNode) {
-                        window.parentNode.removeChild(window);
-                    }
-                }, 300);
-            });
-            tipCount = 0;
-            updateTipCount();
-        }
-
         // 右键菜单事件
         contextMenu.addEventListener('click', function(e) {
             const action = e.target.dataset.action;
             if (!currentWindow) return;
 
+            // 固定气泡不允许随机位置和关闭
             if (currentWindow.classList.contains('fixed-tip-window') && 
                 (action === 'random' || action === 'close')) {
                 contextMenu.style.display = 'none';
@@ -899,8 +704,10 @@
 
             switch(action) {
                 case 'copy':
+                    // 复制文字
                     navigator.clipboard.writeText(currentWindow.innerText)
                         .then(() => {
+                            // 复制成功提示
                             const originalText = currentWindow.innerText;
                             currentWindow.innerText = '复制成功！';
                             setTimeout(() => {
@@ -909,9 +716,11 @@
                         });
                     break;
                 case 'top':
+                    // 置顶
                     currentWindow.style.zIndex = 3000;
                     break;
                 case 'random':
+                    // 随机位置
                     const screenWidth = window.innerWidth;
                     const screenHeight = window.innerHeight;
                     const winWidth = currentWindow.offsetWidth;
@@ -924,6 +733,7 @@
                     currentWindow.style.top = y + 'px';
                     break;
                 case 'close':
+                    // 关闭
                     createParticles(
                         parseInt(currentWindow.style.left) + currentWindow.offsetWidth/2,
                         parseInt(currentWindow.style.top) + currentWindow.offsetHeight/2
@@ -940,6 +750,7 @@
                     break;
             }
 
+            // 隐藏菜单
             contextMenu.style.display = 'none';
             currentWindow = null;
         });
@@ -950,49 +761,38 @@
             currentWindow = null;
         });
 
-        // 点击空白处添加新窗口（仅在首次清空后生效）
+        // 点击空白处添加新窗口
         document.body.onclick = function(e) {
-            if (e.target === document.body && hasClearedFirst) {
+            if (e.target === document.body) {
                 showWarmTip();
-                clickCount++;
-                checkClickCount();
             }
         };
-
-        // 检查点击次数（核心逻辑）
-        function checkClickCount() {
-            if (clickCount >= 100) {
-                // 清空所有气泡
-                clearAllBubbles();
-                
-                // 延迟显示表白界面（动画过渡）
-                setTimeout(() => {
-                    showConfession();
-                }, 500);
-            }
-        }
 
         // 按钮事件
         document.getElementById('addBtn').addEventListener('click', function(e) {
             e.stopPropagation();
-            if (hasClearedFirst) {
-                showWarmTip();
-                clickCount++;
-                checkClickCount();
-            }
+            showWarmTip();
         });
 
         document.getElementById('clearBtn').addEventListener('click', function(e) {
             e.stopPropagation();
-            if (!hasClearedFirst) {
-                // 首次清空
-                clearAllBubbles();
-                hasClearedFirst = true;
-                clickCount = 0; // 重置点击计数
-            } else {
-                // 普通清空
-                clearAllBubbles();
-            }
+            const allWindows = document.querySelectorAll('.warm-tip-window:not(.fixed-tip-window)');
+            allWindows.forEach(window => {
+                // 批量粒子效果
+                createParticles(
+                    parseInt(window.style.left) + window.offsetWidth/2,
+                    parseInt(window.style.top) + window.offsetHeight/2
+                );
+                window.style.opacity = "0";
+                window.style.transform = "scale(0.8)";
+                setTimeout(() => {
+                    if (window.parentNode) {
+                        window.parentNode.removeChild(window);
+                    }
+                }, 300);
+            });
+            tipCount = 0;
+            updateTipCount();
         });
 
         // 窗口大小改变时调整位置
@@ -1017,6 +817,7 @@
                 window.style.top = newTop + 'px';
             });
 
+            // 调整固定气泡的位置
             if (fixedTipWindow) {
                 const screenWidth = window.innerWidth;
                 const screenHeight = window.innerHeight;
@@ -1031,7 +832,7 @@
             }
         };
 
-        // 初始化
+        // 初始化：先创建固定气泡，再创建30个普通气泡
         createFixedTipWindow();
 
         const totalWindows = 30;
