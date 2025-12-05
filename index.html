@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试版本5.0</title>
+    <title>1.0</title>
     <style>
         body {
             margin: 0;
@@ -475,6 +475,7 @@
         let tipCount = 0;
         let clickCount = 0; // 记录新增气泡点击次数
         let hasClearedFirst = false; // 标记是否首次清空
+        let confessionUnlocked = false; // 标记是否解锁表白界面（清空后才解锁）
         const tipCountElement = document.getElementById('tipCount');
         const contextMenu = document.getElementById('contextMenu');
         const confessionContainer = document.getElementById('confessionContainer');
@@ -950,18 +951,22 @@
             currentWindow = null;
         });
 
-        // 点击空白处添加新窗口（仅在首次清空后生效）
+        // 点击空白处添加新窗口（仅在解锁后生效）
         document.body.onclick = function(e) {
-            if (e.target === document.body && hasClearedFirst) {
+            if (e.target === document.body) {
                 showWarmTip();
-                clickCount++;
-                checkClickCount();
+                // 只有解锁后才计数
+                if (confessionUnlocked) {
+                    clickCount++;
+                    checkClickCount();
+                }
             }
         };
 
         // 检查点击次数（核心逻辑）
         function checkClickCount() {
-            if (clickCount >= 100) {
+            // 只有解锁后且计数满100才显示表白界面
+            if (confessionUnlocked && clickCount >= 100) {
                 // 清空所有气泡
                 clearAllBubbles();
                 
@@ -975,8 +980,10 @@
         // 按钮事件
         document.getElementById('addBtn').addEventListener('click', function(e) {
             e.stopPropagation();
-            if (hasClearedFirst) {
-                showWarmTip();
+            // 无论是否清空都可以新增
+            showWarmTip();
+            // 只有解锁后才计数
+            if (confessionUnlocked) {
                 clickCount++;
                 checkClickCount();
             }
@@ -985,9 +992,10 @@
         document.getElementById('clearBtn').addEventListener('click', function(e) {
             e.stopPropagation();
             if (!hasClearedFirst) {
-                // 首次清空
+                // 首次清空 - 解锁表白界面
                 clearAllBubbles();
                 hasClearedFirst = true;
+                confessionUnlocked = true; // 解锁表白界面
                 clickCount = 0; // 重置点击计数
             } else {
                 // 普通清空
